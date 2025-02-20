@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import java.io.IOException;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@Configuration
 public class WebSecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
@@ -33,8 +35,8 @@ public class WebSecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/", "/api/v1/auth/**", "api/v1/search/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "api/v1/board/**", "api/v1/user/*").hasRole("ADMIN")
+                        .requestMatchers("/", "/api/v1/auth/**", "api/v1/search/**", "/file/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "api/v1/board/**", "api/v1/user/*").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(e -> e
                         .authenticationEntryPoint(new FailedAuthenticationEntryPoint()));
@@ -51,7 +53,7 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.getWriter().write("{\"CODE\": \"AF\", \"MESSAGE\": \"Authorization Failed\"}");
+        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.getWriter().write("{\"CODE\": \"NP\", \"MESSAGE\": \"DO NOT HAVE PERMISSION\"}");
     }
 }
