@@ -1,22 +1,20 @@
 package com.example.blog.board_back.service.implement;
 
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
+import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
 import com.example.blog.board_back.dto.response.ResponseDto;
-import com.example.blog.board_back.dto.response.board.GetBoardResponseDto;
-import com.example.blog.board_back.dto.response.board.GetFavoriteListResponseDto;
-import com.example.blog.board_back.dto.response.board.PostBoardResponseDto;
-import com.example.blog.board_back.dto.response.board.PutFavoriteResponseDto;
+import com.example.blog.board_back.dto.response.board.*;
 import com.example.blog.board_back.entity.BoardEntity;
+import com.example.blog.board_back.entity.CommentEntity;
 import com.example.blog.board_back.entity.FavoriteEntity;
 import com.example.blog.board_back.entity.ImageEntity;
-import com.example.blog.board_back.repository.BoardRepository;
-import com.example.blog.board_back.repository.FavoriteRepository;
-import com.example.blog.board_back.repository.ImageRepository;
-import com.example.blog.board_back.repository.UserRepository;
+import com.example.blog.board_back.repository.*;
 import com.example.blog.board_back.repository.resultSet.GetBoardResultSet;
+import com.example.blog.board_back.repository.resultSet.GetCommentListResultSet;
 import com.example.blog.board_back.repository.resultSet.GetFavoriteListResultSet;
 import com.example.blog.board_back.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +29,7 @@ public class BoardServiceImplement implements BoardService {
     private final BoardRepository boardRepository;
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -122,5 +121,43 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return GetFavoriteListResponseDto.success(resultSets);
+    }
+
+    @Override
+    public ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardIdx, String email) {
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardIdx(boardIdx);
+            if(boardEntity == null) return PostCommentResponseDto.noExistBoard();
+
+            boolean existUser = userRepository.existsByEmail(email);
+            if(!existUser) return PostCommentResponseDto.noExistUser();
+
+            CommentEntity commentEntity = new CommentEntity(dto, boardIdx, email);
+            commentRepository.save(commentEntity);
+
+            boardEntity.increaseCommentCount();
+            boardRepository.save(boardEntity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PostCommentResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardIdx) {
+        List<GetCommentListResultSet> resultSets = new ArrayList<>();
+        try {
+            boolean existBoard = boardRepository.existsByBoardIdx(boardIdx);
+            if(!existBoard) return GetCommentListResponseDto.noExistBoard();
+
+            resultSets = commentRepository.getCommentList(boardIdx);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetCommentListResponseDto.success(resultSets);
     }
 }
