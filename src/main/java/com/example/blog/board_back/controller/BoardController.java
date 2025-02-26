@@ -2,6 +2,7 @@ package com.example.blog.board_back.controller;
 
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.response.board.GetBoardResponseDto;
+import com.example.blog.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.example.blog.board_back.dto.response.board.PostBoardResponseDto;
 import com.example.blog.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.example.blog.board_back.service.BoardService;
@@ -32,6 +33,12 @@ public class BoardController {
     @PutMapping("/{boardIdx}/favorite")
     public ResponseEntity<? super PutFavoriteResponseDto> putFavorite(@PathVariable("boardIdx") Integer boardIdx, @AuthenticationPrincipal String email) {
         ResponseEntity<? super PutFavoriteResponseDto> response = boardService.putBoardFavorite(boardIdx, email);
+        return response;
+    }
+
+    @GetMapping("{boardIdx}/favorite-list")
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(@PathVariable("boardIdx") Integer boardIdx) {
+        ResponseEntity<? super GetFavoriteListResponseDto> response = boardService.getFavoriteList(boardIdx);
         return response;
     }
 }

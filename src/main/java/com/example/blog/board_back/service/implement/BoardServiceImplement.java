@@ -3,6 +3,7 @@ package com.example.blog.board_back.service.implement;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.response.ResponseDto;
 import com.example.blog.board_back.dto.response.board.GetBoardResponseDto;
+import com.example.blog.board_back.dto.response.board.GetFavoriteListResponseDto;
 import com.example.blog.board_back.dto.response.board.PostBoardResponseDto;
 import com.example.blog.board_back.dto.response.board.PutFavoriteResponseDto;
 import com.example.blog.board_back.entity.BoardEntity;
@@ -13,6 +14,7 @@ import com.example.blog.board_back.repository.FavoriteRepository;
 import com.example.blog.board_back.repository.ImageRepository;
 import com.example.blog.board_back.repository.UserRepository;
 import com.example.blog.board_back.repository.resultSet.GetBoardResultSet;
+import com.example.blog.board_back.repository.resultSet.GetFavoriteListResultSet;
 import com.example.blog.board_back.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -104,5 +106,21 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return PutFavoriteResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardIdx) {
+        List<GetFavoriteListResultSet> resultSets = new ArrayList<>();
+        try {
+            boolean existBoard = boardRepository.existsByBoardIdx(boardIdx);
+            if(!existBoard) return GetFavoriteListResponseDto.noExistBoard();
+
+            resultSets = favoriteRepository.getFavoriteList(boardIdx);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetFavoriteListResponseDto.success(resultSets);
     }
 }

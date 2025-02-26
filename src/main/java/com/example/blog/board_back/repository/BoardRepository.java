@@ -18,4 +18,6 @@ public interface BoardRepository extends JpaRepository<BoardEntity, Integer> {
                     "ON B.writer_email = U.email WHERE board_idx = ?1", nativeQuery = true)
     GetBoardResultSet getBoard(Integer boardIdx);
 
+    boolean existsByBoardIdx(Integer boardIdx);
+
 }
