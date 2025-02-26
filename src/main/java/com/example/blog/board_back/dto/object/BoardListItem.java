@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardListItem {
-    private int board_idx;
+    private int boardIdx;
     private String title;
     private String content;
     private String boardTitleImage;
@@ -16,6 +16,5 @@ public class BoardListItem {
     private int commentCount;
     private int viewCount;
     private String reg_date;
-    private int user_idx;
     private String writerProfileImage;
 }

@@ -12,10 +12,8 @@ import lombok.NoArgsConstructor;
 @Table(name="favorite")
 @IdClass(FavoriteEntity.class)
 public class FavoriteEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int favorite_idx;
     @Id
-    private int user_idx;
+    private String userEmail;
     @Id
-    private int board_idx;
+    private int boardIdx;
 }

@@ -14,16 +14,15 @@ import lombok.NoArgsConstructor;
 @Table(name="board_list_view")
 public class BoardListViewEntity {
     @Id
-    private int board_idx;
+    private int boardIdx;
     private String title;
     private String content;
-    private String title_image;
-    private int favorite_count;
-    private int view_count;
-    private int comment_count;
-    private String reg_datetime;
-    private String writer_nickname;
+    private String titleImage;
+    private int favoriteCount;
+    private int viewCount;
+    private int commentCount;
+    private String regDatetime;
+    private String writerNickname;
     private String email;
-    private int user_idx;
     private String writer_profile_image;
 }
