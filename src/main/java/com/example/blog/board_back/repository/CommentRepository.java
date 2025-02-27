@@ -12,7 +12,7 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<CommentEntity, Integer> {
 
-    @Query(value = "SELECT U.nickname AS nickname, u.profile_image AS profileImage, c.reg_datetime AS reg_datetime, c.content AS content " +
+    @Query(value = "SELECT U.nickname AS nickname, u.profile_image AS profileImage, c.reg_datetime AS regDate, c.content AS content " +
                         "FROM comment AS c " +
                         "INNER JOIN user AS u " +
                         "ON c.user_email = u.email " +

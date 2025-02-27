@@ -14,13 +14,13 @@ import java.util.List;
 public class CommentListItem {
     private String nickname;
     private String profileImage;
-    private String regDateTime;
+    private String regDate;
     private String content;
 
     public CommentListItem(GetCommentListResultSet resultSet) {
         this.nickname = resultSet.getNickname();
         this.profileImage = resultSet.getProfileImage();
-        this.regDateTime = resultSet.getRegDateTime();
+        this.regDate = resultSet.getRegDate();
         this.content = resultSet.getContent();
     }
 
