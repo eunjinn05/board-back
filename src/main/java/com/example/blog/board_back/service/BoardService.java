@@ -12,4 +12,5 @@ public interface BoardService {
     ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardIdx);
     ResponseEntity<? super PostCommentResponseDto> postComment(PostCommentRequestDto dto, Integer boardIdx, String email);
     ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardIdx);
+    ResponseEntity<? super IncreaseViewCountResponseDto> getIncreaseViewCount(Integer boardIdx);
 }

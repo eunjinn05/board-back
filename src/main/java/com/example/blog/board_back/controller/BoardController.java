@@ -52,4 +52,11 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping("/{boardIdx}/increase-view-count")
+    public ResponseEntity<? super IncreaseViewCountResponseDto> increaseViewCount(@PathVariable("boardIdx") Integer boardIdx) {
+        ResponseEntity<? super IncreaseViewCountResponseDto> response = boardService.getIncreaseViewCount(boardIdx);
+        return response;
+    }
+
+
 }
