@@ -1,5 +1,6 @@
 package com.example.blog.board_back.service.implement;
 
+import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
 import com.example.blog.board_back.dto.response.ResponseDto;
@@ -14,7 +15,6 @@ import com.example.blog.board_back.repository.resultSet.GetCommentListResultSet;
 import com.example.blog.board_back.repository.resultSet.GetFavoriteListResultSet;
 import com.example.blog.board_back.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -197,5 +197,39 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return DeleteBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardIdx, String email) {
+        try {
+            BoardEntity boardEntity = boardRepository.findByBoardIdx(boardIdx);
+            if(boardEntity == null) return PatchBoardResponseDto.notExistBoard();
+
+            boolean existedUser = userRepository.existsByEmail(email);
+            if(!existedUser) return PatchBoardResponseDto.notExistUser();
+
+            String writerEmail = boardEntity.getWriterEmail();
+            boolean isWriter = writerEmail.equals(email);
+            if(!isWriter) return PatchBoardResponseDto.noPermission();
+
+            boardEntity.patchBoard(dto);
+            boardRepository.save(boardEntity);
+
+            imageRepository.deleteByBoardIdx(boardIdx);
+            List<String> boardImageList = dto.getBoardImageList();
+            List<ImageEntity> imageEntities = new ArrayList<>();
+
+            for (String image: boardImageList) {
+                ImageEntity imageEntity = new ImageEntity(boardIdx, image);
+                imageEntities.add(imageEntity);
+            }
+            imageRepository.saveAll(imageEntities);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return PatchBoardResponseDto.success();
     }
 }

@@ -1,5 +1,6 @@
 package com.example.blog.board_back.controller;
 
+import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
 import com.example.blog.board_back.dto.response.board.*;
@@ -61,6 +62,12 @@ public class BoardController {
     @DeleteMapping("/{boardIdx}")
     public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(@PathVariable("boardIdx") Integer boardIdx, @AuthenticationPrincipal String email) {
         ResponseEntity<? super DeleteBoardResponseDto> response = boardService.deleteBoard(boardIdx, email);
+        return response;
+    }
+
+    @PatchMapping("/{boardIdx}")
+    public ResponseEntity<? super PatchBoardResponseDto> patchBoard(@RequestBody @Valid PatchBoardRequestDto requestBody, @PathVariable("boardIdx") Integer boardIdx, @AuthenticationPrincipal String email) {
+        ResponseEntity<? super PatchBoardResponseDto> response = boardService.patchBoard(requestBody, boardIdx, email);
         return response;
     }
 

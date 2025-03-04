@@ -1,5 +1,6 @@
 package com.example.blog.board_back.service;
 
+import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
 import com.example.blog.board_back.dto.response.board.*;
@@ -14,4 +15,5 @@ public interface BoardService {
     ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardIdx);
     ResponseEntity<? super IncreaseViewCountResponseDto> getIncreaseViewCount(Integer boardIdx);
     ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardIdx, String email);
+    ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardIdx, String email);
 }
