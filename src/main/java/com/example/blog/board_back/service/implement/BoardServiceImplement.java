@@ -172,4 +172,30 @@ public class BoardServiceImplement implements BoardService {
         }
         return IncreaseViewCountResponseDto.success();
     }
+
+    @Override
+    public ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardIdx, String email) {
+        try {
+            boolean existUser = userRepository.existsByEmail(email);
+            if (!existUser) return DeleteBoardResponseDto.noExistUser();
+
+            BoardEntity boardEntity = boardRepository.findByBoardIdx(boardIdx);
+            if(boardEntity == null) return DeleteBoardResponseDto.noExistBoard();
+
+            String writerEmail = boardEntity.getWriterEmail();
+            boolean isWriter = writerEmail.equals(email);
+            if(!isWriter) return DeleteBoardResponseDto.noPermission();
+
+            imageRepository.deleteByBoardIdx(boardIdx);
+            commentRepository.deleteByBoardIdx(boardIdx);
+            favoriteRepository.deleteByBoardIdx(boardIdx);
+
+            boardRepository.delete(boardEntity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return DeleteBoardResponseDto.success();
+    }
 }

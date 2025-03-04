@@ -6,6 +6,7 @@ import com.example.blog.board_back.repository.resultSet.GetFavoriteListResultSet
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,4 +22,7 @@ public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Favori
                     "ON f.user_email = U.email " +
                     "WHERE f.board_idx=?1", nativeQuery = true)
     List<GetFavoriteListResultSet> getFavoriteList(Integer boardIdx);
+
+    @Transactional
+    void deleteByBoardIdx(Integer boardIdx);
 }
