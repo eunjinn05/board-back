@@ -16,4 +16,6 @@ public interface BoardService {
     ResponseEntity<? super IncreaseViewCountResponseDto> getIncreaseViewCount(Integer boardIdx);
     ResponseEntity<? super DeleteBoardResponseDto> deleteBoard(Integer boardIdx, String email);
     ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardIdx, String email);
+    ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
+    ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
 }

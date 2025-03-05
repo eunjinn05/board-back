@@ -5,10 +5,7 @@ import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
 import com.example.blog.board_back.dto.response.ResponseDto;
 import com.example.blog.board_back.dto.response.board.*;
-import com.example.blog.board_back.entity.BoardEntity;
-import com.example.blog.board_back.entity.CommentEntity;
-import com.example.blog.board_back.entity.FavoriteEntity;
-import com.example.blog.board_back.entity.ImageEntity;
+import com.example.blog.board_back.entity.*;
 import com.example.blog.board_back.repository.*;
 import com.example.blog.board_back.repository.resultSet.GetBoardResultSet;
 import com.example.blog.board_back.repository.resultSet.GetCommentListResultSet;
@@ -18,7 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -30,6 +31,7 @@ public class BoardServiceImplement implements BoardService {
     private final ImageRepository imageRepository;
     private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
+    private final BoardListViewRepository boardListViewRepository;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -231,5 +233,37 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return PatchBoardResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList() {
+
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+
+        try {
+            boardListViewEntities = boardListViewRepository.findByOrderByRegDatetimeDesc();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetLatestBoardListResponseDto.success(boardListViewEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList() {
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+        try {
+            Date beforeWeek = Date.from(Instant.now().minus(7, ChronoUnit.DAYS));
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String sevenDaysAgo = simpleDateFormat.format(beforeWeek);
+            boardListViewEntities = boardListViewRepository.findTop3ByRegDatetimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDesc(sevenDaysAgo);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetTop3BoardListResponseDto.success(boardListViewEntities);
     }
 }
