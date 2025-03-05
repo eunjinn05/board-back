@@ -3,6 +3,7 @@ package com.example.blog.board_back.service.implement;
 import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
+import com.example.blog.board_back.dto.response.GetSearchBoardListResponseDto;
 import com.example.blog.board_back.dto.response.ResponseDto;
 import com.example.blog.board_back.dto.response.board.*;
 import com.example.blog.board_back.entity.*;
@@ -32,6 +33,7 @@ public class BoardServiceImplement implements BoardService {
     private final FavoriteRepository favoriteRepository;
     private final CommentRepository commentRepository;
     private final BoardListViewRepository boardListViewRepository;
+    private final SearchLogRepository searchLogRepository;
 
     @Override
     public ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email) {
@@ -265,5 +267,28 @@ public class BoardServiceImplement implements BoardService {
             return ResponseDto.databaseError();
         }
         return GetTop3BoardListResponseDto.success(boardListViewEntities);
+    }
+
+    @Override
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord) {
+        List<BoardListViewEntity> boardListViewEntities = new ArrayList<>();
+        try {
+            boardListViewEntities = boardListViewRepository.findByTitleContainsOrContentContainsOrderByRegDatetimeDesc(searchWord, searchWord);
+
+            SearchLogEntity searchLogEntity = new SearchLogEntity(searchWord, preSearchWord, false);
+            searchLogRepository.save(searchLogEntity);
+
+            boolean relation = preSearchWord != null;
+            if(relation) {
+                searchLogEntity = new SearchLogEntity(preSearchWord, searchWord, relation);
+                searchLogRepository.save(searchLogEntity);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+        return GetSearchBoardListResponseDto.success(boardListViewEntities);
     }
 }

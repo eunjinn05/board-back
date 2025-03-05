@@ -10,4 +10,5 @@ import java.util.List;
 public interface BoardListViewRepository extends JpaRepository<BoardListViewEntity, Integer> {
     List<BoardListViewEntity> findByOrderByRegDatetimeDesc();
     List<BoardListViewEntity> findTop3ByRegDatetimeGreaterThanOrderByFavoriteCountDescCommentCountDescViewCountDesc(String regdate);
+    List<BoardListViewEntity> findByTitleContainsOrContentContainsOrderByRegDatetimeDesc(String title, String content);
 }

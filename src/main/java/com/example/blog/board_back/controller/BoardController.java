@@ -3,6 +3,7 @@ package com.example.blog.board_back.controller;
 import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
+import com.example.blog.board_back.dto.response.GetSearchBoardListResponseDto;
 import com.example.blog.board_back.dto.response.board.*;
 import com.example.blog.board_back.service.BoardService;
 import jakarta.validation.Valid;
@@ -83,4 +84,9 @@ public class BoardController {
         return response;
     }
 
+    @GetMapping(value = {"/search-list/{searchWord}", "/search-list/{searchWord}/{preSearchWord}"})
+    public ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(@PathVariable("searchWord") String searchWord, @PathVariable(value="preSearchWord", required = false) String preSearchWord) {
+        ResponseEntity<? super GetSearchBoardListResponseDto> response= boardService.getSearchBoardList(searchWord, preSearchWord);
+        return response;
+    }
 }

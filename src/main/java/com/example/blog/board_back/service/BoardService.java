@@ -3,6 +3,7 @@ package com.example.blog.board_back.service;
 import com.example.blog.board_back.dto.request.board.PatchBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostBoardRequestDto;
 import com.example.blog.board_back.dto.request.board.PostCommentRequestDto;
+import com.example.blog.board_back.dto.response.GetSearchBoardListResponseDto;
 import com.example.blog.board_back.dto.response.board.*;
 import org.springframework.http.ResponseEntity;
 
@@ -18,4 +19,5 @@ public interface BoardService {
     ResponseEntity<? super PatchBoardResponseDto> patchBoard(PatchBoardRequestDto dto, Integer boardIdx, String email);
     ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
     ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
+    ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord);
 }
