@@ -25,6 +25,7 @@ public class UserEntity {
     private String profileImage;
     private boolean agreedPersonal;
 
+
     public UserEntity (SignUpRequestDto dto) {
         this.email = dto.getEmail();
         this.password = dto.getPassword();

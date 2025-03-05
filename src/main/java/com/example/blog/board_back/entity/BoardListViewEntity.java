@@ -22,6 +22,7 @@ public class BoardListViewEntity {
     private int viewCount;
     private int commentCount;
     private String regDatetime;
+    private String writerEmail;
     private String writerNickname;
     private String writerProfileImage;
 }
